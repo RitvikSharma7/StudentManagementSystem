@@ -8,69 +8,69 @@ class StudentRecords:
         self.cw = csv.writer(self.file)
         self.file.seek(0)
         self.cr = csv.reader(self.file)
-
-        # Write header if file is empty
-        if not any(self.cr):
-            self.cw.writerow(["ID", "Name", "Final Grade"])
-            
-            
-    
-    """
-    create_record: Writes student data into csv file.
-
-    @param record: list paramter that has student data, so the writer can write it
-    into the file.
-
-    """
-    def create_record(self, record):
-        self.cw.writerow(record)
-        self.file.flush()
         
-    """
-    delete_record: deletes student data in a csv file by checking ID(primary key).
+        # Write header if file is empty
+        if not self.file.read(1):  # Check if the file is empty
+            self.file.seek(0)
+            self.cw.writerow(["ID", "Name", "Final Grade"])
+            self.file.flush()
+        else:
+            self.file.seek(0)  # Ensure the file pointer is at the start
 
-    @param record_d: int paramter that is the ID of the student record used to check data.
-    
-
-    """
-
+    def create_record(self, record):
+        """
+        create_record: Writes student data into csv file.
+        @param record: list parameter that has student data, so the writer can write it
+        into the file.
+        """
+        try:
+            self.cw.writerow(record)
+            self.file.flush()
+            return True
+        except Exception as e:
+            print(f"{e}")
+            return False
+        
+        
 
     def delete_record(self, record_id):
-        # Move to the start of the file
-        self.file.seek(0)
+        """
+        delete_record: Deletes student data in a CSV file by checking ID (primary key).
+        @param record_id: str parameter that is the ID of the student record used to check data.
+        """
+        try:
+            self.file.seek(0)
+            
+            rows = list(self.cr)  # Read all rows into memory
+            self.file.seek(0)
+            
+            self.file.truncate() # Clear the file
+            
+            found = False
+            
+            for row in rows:
+                if row and row[0] != record_id: # Skip empty rows and matching IDs
+                    self.cw.writerow(row)
+                else:
+                    found = True
+            self.file.flush()
+            return found
+        except Exception as e:
+            print(f"{e}")
+            return False
 
-        # Read all rows into memory
-        rows = list(self.cr)
-
-        # Truncate the file to start fresh
-        self.file.seek(0)
-        self.file.truncate()
-
-        # Write back rows that don't match the record_id
-        for row in rows:
-            if row[0] != record_id:
-                self.cw.writerow(row)
-
-        # Ensure data is written to the file
-        self.file.flush()
-
-        
-    """
-    search_record: searches student data in a csv file by checking ID(primary key).
-
-    @param record_d: int paramter that is the ID of the student record used to check data.
-    
-    @return: return the student row(list) if the ID is matched else returns and empty list([]).
-
-    """
-        
     def search_record(self, record_id):
-    # Ensure the file pointer is at the start
-        self.file.seek(0)
-    
-    # Iterate through the CSV reader directly
+        """
+        search_record: Searches student data in a CSV file by checking ID (primary key).
+        @param record_id: str parameter that is the ID of the student record used to check data.
+        @return: Returns the student row (list) if the ID matches; else returns an empty list ([]).
+        """
+        self.file.seek(0)  # Ensure the file pointer is at the start
         for row in self.cr:
             if row and row[0] == record_id:  # Check row is not empty and matches
                 return row
-        
         return []
+
+    def close(self):
+        """Closes the file to ensure resources are properly released."""
+        self.file.close()
