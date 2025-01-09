@@ -70,6 +70,31 @@ class StudentRecords:
             if row and row[0] == record_id:  # Check row is not empty and matches
                 return row
         return []
+    
+    def group_records(self, group_size):
+        Students = list(self.cr)
+        
+        
+        if len(Students) <= 1:  # No data rows
+            return None  # Return None if there's no data to group
+    
+        Students = Students[1:]  # Skip the header row
+    
+        if group_size <= 0 or group_size > len(Students):  # Invalid group size
+            return None
+        
+        total_team_size = len(Students)
+        whole_team_size = total_team_size // group_size
+        rem_team_size = total_team_size % group_size
+        
+        whole_list = [tuple(Students[i * group_size : (i + 1) * group_size]) for i in range(whole_team_size)]
+    
+        if rem_team_size != 0:
+            whole_list.append(tuple(Students[whole_team_size * group_size:]))
+        
+        return whole_list
+        
+        
 
     def close(self):
         """Closes the file to ensure resources are properly released."""
