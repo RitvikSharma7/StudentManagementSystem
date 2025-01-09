@@ -18,7 +18,7 @@ The <ins>mygui</ins> file is the frontend user friendly UI which helps a user pe
 # SMS tool preview
 The User Interface of the SMS tool
 ![Screenshot 2025-01-10 025802](https://github.com/user-attachments/assets/86bc8985-0f25-48d4-98d1-d0a545f64673)
-]
+
 
 
 
