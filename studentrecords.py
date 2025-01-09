@@ -19,9 +19,14 @@ class StudentRecords:
 
     def create_record(self, record):
         """
-        create_record: Writes student data into csv file.
-        @param record: list parameter that has student data, so the writer can write it
+        Writes student data into csv file.
+        
+        Parameters:
+        record: list parameter that has student data, so the writer can write it
         into the file.
+        
+        Returns:
+        True if data written succesfully, else False.
         """
         try:
             self.cw.writerow(record)
@@ -35,8 +40,13 @@ class StudentRecords:
 
     def delete_record(self, record_id):
         """
-        delete_record: Deletes student data in a CSV file by checking ID (primary key).
-        @param record_id: str parameter that is the ID of the student record used to check data.
+        Deletes student data in a CSV file by checking ID (primary key).
+        
+        Parameters:
+        record_id: str parameter that is the ID of the student record used to check data.
+        
+        Returns:
+        True if rows are written without exception, else False.
         """
         try:
             self.file.seek(0)
@@ -61,9 +71,13 @@ class StudentRecords:
 
     def search_record(self, record_id):
         """
-        search_record: Searches student data in a CSV file by checking ID (primary key).
-        @param record_id: str parameter that is the ID of the student record used to check data.
-        @return: Returns the student row (list) if the ID matches; else returns an empty list ([]).
+        Searches student data in a CSV file by checking ID (primary key).
+        
+        Parameters:
+        record_id: str parameter that is the ID of the student record used to check data.
+        
+        Returns:
+        Returns the student row (list) if the ID matches; else returns an empty list ([]).
         """
         self.file.seek(0)  # Ensure the file pointer is at the start
         for row in self.cr:
@@ -72,15 +86,26 @@ class StudentRecords:
         return []
     
     def group_records(self, group_size):
-        Students = list(self.cr)
+        """
+            Groups students based on group size required.
+            
+            Parameters:
+            group_size: size of each student group.
+            
+            Returns:
+            Grouped list if conditions valid, else nothing."""
         
+        self.file.seek(0)
+        
+        Students = list(self.cr)
+        print(Students)
         
         if len(Students) <= 1:  # No data rows
             return None  # Return None if there's no data to group
     
         Students = Students[1:]  # Skip the header row
-    
-        if group_size <= 0 or group_size > len(Students):  # Invalid group size
+        
+        if group_size <= 0:  # Invalid group size
             return None
         
         total_team_size = len(Students)
