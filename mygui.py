@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.messagebox
-from studentrecords import StudentRecords  
+from studentrecords import StudentRecords
 
 class MyGUI:
     
@@ -20,17 +20,24 @@ class MyGUI:
         self.arg_list2 = ["ADD", "DELETE", "SEARCH", "GROUP"]
         self.cmd_list = [self.Add, self.Delete, self.Search, self.Group]
         self.btn_dict = {}
+        self.radio_var = tk.IntVar(value=1)
 
         self.createFrame()
         self.createLblEnt()
         self.createButtons()
         self.createOutputBox()
+        self.RadioButtons()
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)  # Handle window close event
 
     def createFrame(self):
-        self.frame = tk.Frame(self.root)
-        self.frame.pack(padx=20, pady=20, fill="both", expand=True)
+        """
+            Creates Frame for Widgets and RadioButton sections.  """
+        
+        self.frame = tk.Frame(self.root, height = 600, width = 600)
+        self.frameOperation = tk.Frame(self.root,height = 200, width = 600)
+        self.frameOperation.pack( padx=20, pady=20, fill="both", expand=True)
+        self.frame.pack( padx=20, pady=20, fill="both", expand=True)
         for i in range(3):
             self.frame.columnconfigure(i, weight=1)
         for i in range(4):
@@ -46,7 +53,7 @@ class MyGUI:
     def createButtons(self):
         for idx, btn in enumerate(self.arg_list2):
             self.btn_dict[btn] = tk.Button(self.frame, text=btn, command=self.cmd_list[idx], width=10)
-            self.btn_dict[btn].grid(row=idx, column=2, padx=10, pady=10, sticky="nsew")
+            self.btn_dict[btn].grid(row=idx, column=2, padx=10, pady=10, sticky="nsew")   
 
     def createOutputBox(self):
         self.sturec_box = tk.Listbox(self.frame, height=6, width=30, bg="light blue")
@@ -62,6 +69,35 @@ class MyGUI:
             # Link the Listbox to the Scrollbar
         self.sturec_box.config(yscrollcommand=self.scrollbar.set)
         
+    def SMS_or_GROUP(self):
+        if self.radio_var.get() == 0:
+            
+            self.btn_dict["GROUP"]["state"] = "disabled"
+            self.btn_dict["ADD"]["state"] = "active"
+            self.btn_dict["DELETE"]["state"] = "active"
+            self.btn_dict["SEARCH"]["state"] = "active"
+             
+        elif self.radio_var.get() == 1:
+            
+            self.btn_dict["ADD"]["state"] = "disabled"
+            self.btn_dict["DELETE"]["state"] = "disabled"
+            self.btn_dict["SEARCH"]["state"] = "disabled"
+            self.btn_dict["GROUP"]["state"] = "active"
+            
+    def RadioButtons(self):
+        self.radio_var = tk.IntVar()  # Define an instance variable to track the selected radiobutton
+        lst = ["SMS", "GROUP STUDENTS"]
+
+        for idx, value in enumerate(lst):
+            self.rd_btn = tk.Radiobutton(
+                self.frameOperation,
+                text=value,
+                variable=self.radio_var,  # Associate the variable with the radiobuttons
+                font=("Arial", 18),
+                value=idx,  # Value of the radiobutton
+                command=self.SMS_or_GROUP,  # Call SMS_or_GROUP when a button is selected
+            )
+            self.rd_btn.pack(anchor = "w")  # Align radiobuttons to the left
 
     def Add(self):
         record = [self.entry_dict["ID"].get(), self.entry_dict["Name"].get(), self.entry_dict["Final Grade"].get()]
