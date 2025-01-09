@@ -4,7 +4,7 @@ from studentrecords import StudentRecords
 
 class MyGUI:
     
-    sep = " TEAM "
+    sep = "TEAM "
         
     def __init__(self, root, path="smstest.csv", bg_clr="lightblue"):
         self.root = root
@@ -76,17 +76,25 @@ class MyGUI:
             self.btn_dict["ADD"]["state"] = "active"
             self.btn_dict["DELETE"]["state"] = "active"
             self.btn_dict["SEARCH"]["state"] = "active"
+            self.entry_dict["ID"]["state"] = "normal"
+            self.entry_dict["Name"]["state"] = "normal"
+            self.entry_dict["Final Grade"]["state"] = "normal"
+            self.entry_dict["Group Size"]["state"] = "disabled"
              
         elif self.radio_var.get() == 1:
             
             self.btn_dict["ADD"]["state"] = "disabled"
+            self.entry_dict["ID"]["state"] = "disabled"
             self.btn_dict["DELETE"]["state"] = "disabled"
+            self.entry_dict["Name"]["state"] = "disabled"
             self.btn_dict["SEARCH"]["state"] = "disabled"
+            self.entry_dict["Final Grade"]["state"] = "disabled"
             self.btn_dict["GROUP"]["state"] = "active"
+            self.entry_dict["Group Size"]["state"] = "normal"
             
     def RadioButtons(self):
         self.radio_var = tk.IntVar()  # Define an instance variable to track the selected radiobutton
-        lst = ["SMS", "GROUP STUDENTS"]
+        lst = ["Students Records Management", "Group Students"]
 
         for idx, value in enumerate(lst):
             self.rd_btn = tk.Radiobutton(
@@ -178,25 +186,27 @@ class MyGUI:
         
         self.sturec_box.delete(0, tk.END)
         
-        for i, group in enumerate(teams):
-            team_text = f"Team {i + 1}: "  # Format the team header
-            members_text = ", ".join(str(e) for e in group)  # Join members with commas
-            self.sturec_box.insert(tk.END, team_text + members_text)  # Insert the team and members into the Listbox
-
-#         # Format the result string for display
-#         result = ""
 #         for i, group in enumerate(teams):
-#             result += f"{'-' * 7}{self.sep}{'-' * 7}\n"  # Separator for the group
-#             for member in group:
-#                 result += f" Member: {member}\n"  # Format each group member
-#         result += "-" * 7 + "-" * len(self.sep) + "-" * 7 + "\n"  # End of the last group
-# 
-#         # Insert the formatted result into the text box
-#         self.sturec_box.insert(tk.END, result)
+#             team_text = f"Team {i + 1}:\n "  # Format the team header
+#             members_text = ", ".join(str(e) for e in group)  # Join members with commas
+#             self.sturec_box.insert(tk.END, team_text + "\n" + members_text + " \n")  # Insert the team and members into the Listbox
 
+        # Format the result string for display
+        result = ""
+        for i, group in enumerate(teams):
+            self.sturec_box.insert(tk.END, f"{'-' * 7}{self.sep}{i + 1}{'-' * 7}\n" ) # Separator for the group
+            for member in group:
+                self.sturec_box.insert(tk.END, f" Member: {member}\n") # Format each group member
+            self.sturec_box.insert(tk.END, "\n")
+        self.sturec_box.insert(tk.END, f"{'-' * 7}{'-' * len(self.sep)}{'-' * len(str(i + 1))}{'-' * 7}\n") # End of the last group
         
+        #print(result)
+        # Insert the formatted result into the text box
+        #self.sturec_box.insert(tk.END, result)
+
 
     def on_closing(self):
+        
         """Handle application closing."""
         self.records.close()  # Close the file to release resources
         self.root.destroy()
