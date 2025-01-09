@@ -3,6 +3,9 @@ import tkinter.messagebox
 from studentrecords import StudentRecords  
 
 class MyGUI:
+    
+    sep = " TEAM "
+        
     def __init__(self, root, path="smstest.csv", bg_clr="lightblue"):
         self.root = root
         self.root.title("Student Database")
@@ -11,11 +14,11 @@ class MyGUI:
 
         self.records = StudentRecords(path)  # Link to the StudentRecords instance
 
-        self.arg_list1 = ["ID", "Name", "Final Grade"]
+        self.arg_list1 = ["ID", "Name", "Final Grade", "Group Size"]
         self.lbl_dict = {}
         self.entry_dict = {}
-        self.arg_list2 = ["ADD", "DELETE", "SEARCH"]
-        self.cmd_list = [self.Add, self.Delete, self.Search]
+        self.arg_list2 = ["ADD", "DELETE", "SEARCH", "GROUP"]
+        self.cmd_list = [self.Add, self.Delete, self.Search, self.Group]
         self.btn_dict = {}
 
         self.createFrame()
@@ -46,9 +49,19 @@ class MyGUI:
             self.btn_dict[btn].grid(row=idx, column=2, padx=10, pady=10, sticky="nsew")
 
     def createOutputBox(self):
-        self.sturec_box = tk.Listbox(self.frame, height=8, width=30, bg="light blue")
+        self.sturec_box = tk.Listbox(self.frame, height=6, width=30, bg="light blue")
         self.sturec_box.grid(row=len(self.arg_list2) + 2, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
-        self.sturec_box.insert(tk.END, " ".join(self.arg_list1))
+
+            # Insert items into the Listbox
+        self.sturec_box.insert(tk.END, " ".join(self.arg_list1[0:3]))
+
+            # Create the Scrollbar
+        self.scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL, command=self.sturec_box.yview)
+        self.scrollbar.grid(row=len(self.arg_list2) + 2, column=3, sticky="ns")  # Use grid to align scrollbar
+
+            # Link the Listbox to the Scrollbar
+        self.sturec_box.config(yscrollcommand=self.scrollbar.set)
+        
 
     def Add(self):
         record = [self.entry_dict["ID"].get(), self.entry_dict["Name"].get(), self.entry_dict["Final Grade"].get()]
@@ -109,6 +122,43 @@ class MyGUI:
                 tk.messagebox.showinfo("Information", f"Record with ID {record_id} not found.")
         except Exception as e:
             tk.messagebox.showerror("Error", f"Error: {e}")
+            
+    def Group(self):
+       
+        try:
+            # Get the group size from input and convert it to an integer
+            group_size = int(self.entry_dict["Group Size"].get())
+        except ValueError:
+            # Show a warning if the input is invalid
+            tk.messagebox.showwarning("Warning", "Please enter a valid number for Group Size.")
+            return  # Exit early if the input is invalid
+
+        # Get the teams from the group_records method
+        teams = self.records.group_records(group_size)
+
+        if teams is None:  # No valid teams could be formed
+            tk.messagebox.showwarning("Warning", "Invalid Group Size!")
+            return
+        
+        self.sturec_box.delete(0, tk.END)
+        
+        for i, group in enumerate(teams):
+            team_text = f"Team {i + 1}: "  # Format the team header
+            members_text = ", ".join(str(e) for e in group)  # Join members with commas
+            self.sturec_box.insert(tk.END, team_text + members_text)  # Insert the team and members into the Listbox
+
+#         # Format the result string for display
+#         result = ""
+#         for i, group in enumerate(teams):
+#             result += f"{'-' * 7}{self.sep}{'-' * 7}\n"  # Separator for the group
+#             for member in group:
+#                 result += f" Member: {member}\n"  # Format each group member
+#         result += "-" * 7 + "-" * len(self.sep) + "-" * 7 + "\n"  # End of the last group
+# 
+#         # Insert the formatted result into the text box
+#         self.sturec_box.insert(tk.END, result)
+
+        
 
     def on_closing(self):
         """Handle application closing."""
