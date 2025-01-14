@@ -106,6 +106,9 @@ class MyGUI:
                 command=self.SMS_or_GROUP,  # Call SMS_or_GROUP when a button is selected
             )
             self.rd_btn.pack(anchor = "w")  # Align radiobuttons to the left
+            
+        self.see_btn = tk.Button(self.frameOperation, text = "SEE", command = self.see, width =10)
+        self.see_btn.pack(side="top", anchor="ne")
 
     def Add(self):
         record = [self.entry_dict["ID"].get(), self.entry_dict["Name"].get(), self.entry_dict["Final Grade"].get()]
@@ -203,6 +206,12 @@ class MyGUI:
         #print(result)
         # Insert the formatted result into the text box
         #self.sturec_box.insert(tk.END, result)
+        
+    def see(self):
+        self.sturec_box.delete(0, tk.END)
+        for row in self.records.cr:
+            formatted_row = " ".join(map(str, row))  
+            self.sturec_box.insert(tk.END, formatted_row)
 
 
     def on_closing(self):
