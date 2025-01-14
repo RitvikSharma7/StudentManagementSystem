@@ -112,6 +112,7 @@ class MyGUI:
 
     def Add(self):
         record = [self.entry_dict["ID"].get(), self.entry_dict["Name"].get(), self.entry_dict["Final Grade"].get()]
+        self.sturec_box.delete(0, tk.END)
 
         if not all(record):
             tk.messagebox.showerror("Error", "Error: All fields must be complete!")
@@ -138,6 +139,8 @@ class MyGUI:
 
     def Delete(self):
         record_id = self.entry_dict["ID"].get()
+        
+        self.sturec_box.delete(0, tk.END)
 
         if not record_id.isdigit():
             tk.messagebox.showerror("Error", "Error: ID field must be numeric!")
@@ -155,6 +158,8 @@ class MyGUI:
 
     def Search(self):
         record_id = self.entry_dict["ID"].get()
+        
+        self.sturec_box.delete(0, tk.END)
 
         if not record_id:
             tk.messagebox.showerror("Error", "Error: ID field is required!")
