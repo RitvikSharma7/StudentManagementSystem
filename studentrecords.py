@@ -118,6 +118,11 @@ class StudentRecords:
             whole_list.append(tuple(Students[whole_team_size * group_size:]))
         
         return whole_list
+    
+#     def see_records(self):
+#         data = "\n".join(str(row) for row in self.cr)
+#         
+#         return data
         
         
 
