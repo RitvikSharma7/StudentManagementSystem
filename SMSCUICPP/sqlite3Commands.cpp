@@ -59,7 +59,7 @@ void insertRecord(int id, const std::string &name, double finalGrade) {
 }
 
 void deleteRecord(int id) {
-    std::string sql = "DELETE FROM StudentRecords WHERE ID = ?;";  // SQL query to delete record with matching ID
+    std::string sql = "DELETE FROM StudentRecords WHERE ID = ?;";  // SQL query
 
     sqlite3_stmt *stmt;
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, 0);  // Prepare the SQL statement
@@ -68,20 +68,23 @@ void deleteRecord(int id) {
         return;
     }
 
-    // Bind the ID to the SQL query placeholder
-    sqlite3_bind_int(stmt, 1, id);
+    sqlite3_bind_int(stmt, 1, id);  // Bind the ID to the query
 
-    // Execute the statement
     rc = sqlite3_step(stmt);
     if (rc != SQLITE_DONE) {
         std::cerr << "Failed to delete record: " << sqlite3_errmsg(db) << std::endl;
     } else {
-        std::cout << "Record with ID " << id << " deleted successfully." << std::endl;
+        int changes = sqlite3_changes(db);  // Check number of rows affected
+        if (changes > 0) {
+            std::cout << "Record with ID " << id << " deleted successfully." << std::endl;
+        } else {
+            std::cout << "No record found with ID " << id << "." << std::endl;
+        }
     }
 
-    // Finalize the statement to release resources
-    sqlite3_finalize(stmt);
+    sqlite3_finalize(stmt);  // Finalize statement
 }
+
 
 void searchRecordByID(int id) {
     std::string sql = "SELECT ID, Name, \"Final Grade\" FROM StudentRecords WHERE ID = ?;";  // SQL query to search by ID

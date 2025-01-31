@@ -101,7 +101,7 @@ void searchStudentRecord(){
     int id {};
 
     while (true){
-        std::cout << "Enter students ID to delete connected record: ";
+        std::cout << "Enter students ID to search for record: ";
         std::cin >> id;
 
         if(std::cin.fail()) {
